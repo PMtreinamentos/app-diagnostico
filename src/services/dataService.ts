@@ -29,7 +29,7 @@ export async function saveToGoogleSheets(data: {
       method: 'POST',
       mode: 'cors',
       headers: {
-        'Content-Type': 'text/plain',
+       'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
