@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Georgia", serif;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  
+  --color-gold: #C5A059;
+  --color-dark-bg: #0F0F0F;
+  --color-dark-card: #141414;
+  --color-dark-accent: #1A1A1A;
+  --color-whatsapp: #25D366;
+}
+
+@layer base {
+  body {
+    @apply bg-dark-bg text-[#E0E0E0] font-sans antialiased;
+  }
+
+  h1, h2, h3 {
+    @apply font-serif;
+  }
+}
+
+.report-preview-container {
+  @apply relative bg-dark-accent border border-white/5 p-8 rounded-lg;
+}
+
+.report-preview-container::before {
+  content: 'PRÉVIA DO RELATÓRIO';
+  @apply absolute -top-2.5 left-5 bg-dark-card px-2.5 text-[10px] tracking-[2px] text-gold;
+}
