@@ -27,7 +27,6 @@ export async function saveToGoogleSheets(data: {
   try {
     const response = await fetch(webhookUrl, {
       method: 'POST',
-      mode: 'cors',
       headers: {
        'Content-Type': 'application/json',
       },
