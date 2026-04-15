@@ -21,18 +21,25 @@ export async function saveToGoogleSheets(data: {
   console.log(`Sending data to Google Sheets... (Payload size: ${Math.round(JSON.stringify(data).length / 1024)} KB)`);
 
   try {
-    await fetch(webhookUrl, {
+    const response = await fetch(webhookUrl, {
       method: 'POST',
-      mode: 'no-cors', // 👈 ESSENCIAL
+      mode: 'cors',
       headers: {
-        'Content-Type': 'text/plain', // 👈 ESSENCIAL
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
 
-    console.log("Data sent to Google Sheets (no-cors).");
-    
+    console.log(`Google Sheets webhook response: ${response.status} ${response.statusText}`);
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => 'no response body');
+      throw new Error(`Webhook failed: ${response.status} ${response.statusText} - ${text}`);
+    }
+
+    console.log("Data sent to Google Sheets.");
   } catch (error) {
     console.error("Error saving to Google Sheets:", error);
+    throw error;
   }
 }
