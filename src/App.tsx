@@ -166,46 +166,13 @@ export default function App() {
     }
   };
 
+  // ✅ CORRIGIDO: removida dependência do diagnosisRef.current
+  // O ref pode ser null no primeiro render, bloqueando o save
   useEffect(() => {
     const autoSave = async () => {
-      if (diagnosis && currentScreen === 'result' && !hasSaved && diagnosisRef.current) {
+      if (diagnosis && currentScreen === 'result' && !hasSaved) {
         setHasSaved(true);
         setSaveStatus('saving');
-        
-        let pdfBase64 = '';
-        try {
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          
-          const element = diagnosisRef.current!;
-          const canvas = await domToCanvas(element, {
-            scale: 1.8,
-            backgroundColor: '#0a0a0a',
-          });
-          
-          const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'px',
-            format: [canvas.width, canvas.height]
-          });
-          
-          pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width, canvas.height);
-          
-          // Dynamic link calculation for auto-save
-          const whatsappBtn = element.querySelector('[data-pdf-link="whatsapp"]');
-          if (whatsappBtn) {
-            const btnRect = whatsappBtn.getBoundingClientRect();
-            const containerRect = element.getBoundingClientRect();
-            const relX = btnRect.left - containerRect.left;
-            const relY = btnRect.top - containerRect.top;
-            const relW = btnRect.width;
-            const relH = btnRect.height;
-            pdf.link(relX, relY, relW, relH, { url: getWhatsAppUrl() });
-          }
-
-          pdfBase64 = pdf.output('datauristring').split(',')[1];
-        } catch (err) {
-          console.error("Auto-save PDF generation skipped or failed:", err);
-        }
 
         saveToGoogleSheets({
           timestamp: new Date().toLocaleString('pt-BR'),
@@ -218,7 +185,7 @@ export default function App() {
           income,
           inputText,
           diagnosis,
-          pdfBase64
+          pdfBase64: ''
         }).then(() => {
           setSaveStatus('success');
         }).catch(err => {
@@ -229,7 +196,7 @@ export default function App() {
     };
 
     autoSave();
-  }, [diagnosis, currentScreen, hasSaved, userName, whatsapp, email, gender, maritalStatus, age, income, inputText]);
+  }, [diagnosis, currentScreen]);
 
   const renderScreen = () => {
     switch (currentScreen) {
