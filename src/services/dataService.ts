@@ -36,7 +36,9 @@ export async function saveToGoogleSheets(data: {
     headers: {
       'Content-Type': 'text/plain',
     },
-    body: JSON.stringify(dataWithoutPdf),
+    body: new URLSearchParams({
+  payload: JSON.stringify(dataWithoutPdf)
+}),
   });
 
   // Com no-cors a resposta é sempre opaca — não há como verificar o status HTTP.
