@@ -18,28 +18,28 @@ export async function saveToGoogleSheets(data: {
     return;
   }
 
-  console.log(`Sending data to Google Sheets... (Payload size: ${Math.round(JSON.stringify(data).length / 1024)} KB)`);
+  // Remove o PDF do payload para evitar timeouts em redes móveis.
+  // O PDF pode ser gerado novamente sob demanda; não precisa trafegar na rede.
+  const { pdfBase64: _omitted, ...dataWithoutPdf } = data;
 
-  try {
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+  const payloadSize = Math.round(JSON.stringify(dataWithoutPdf).length / 1024);
+  console.log(`Sending data to Google Sheets... (Payload size: ${payloadSize} KB)`);
 
-    console.log(`Google Sheets webhook response: ${response.status} ${response.statusText}`);
+  // IMPORTANTE: Google Apps Script não responde ao preflight OPTIONS,
+  // então não podemos usar mode:'cors' + Content-Type:'application/json'.
+  // A solução é usar mode:'no-cors' + Content-Type:'text/plain'.
+  // O Apps Script recebe o JSON como string em e.postData.contents e faz o parse.
+  // A resposta será opaca (não podemos ler o status), mas a requisição chega.
+  await fetch(webhookUrl, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+    body: JSON.stringify(dataWithoutPdf),
+  });
 
-    if (!response.ok) {
-      const text = await response.text().catch(() => 'no response body');
-      throw new Error(`Webhook failed: ${response.status} ${response.statusText} - ${text}`);
-    }
-
-    console.log("Data sent to Google Sheets.");
-  } catch (error) {
-    console.error("Error saving to Google Sheets:", error);
-    throw error;
-  }
+  // Com no-cors a resposta é sempre opaca — não há como verificar o status HTTP.
+  // Consideramos sucesso se o fetch não lançou exceção (rede alcançável).
+  console.log("Data sent to Google Sheets (no-cors — response is opaque).");
 }
