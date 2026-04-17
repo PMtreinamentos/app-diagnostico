@@ -2,6 +2,8 @@ export async function saveToGoogleSheets(data: {
   timestamp: string;
   userName: string;
   whatsapp: string;
+  city: string;
+  state: string;
   email: string;
   gender: string;
   maritalStatus: string;

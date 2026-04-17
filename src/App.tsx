@@ -23,6 +23,7 @@ import { jsPDF } from 'jspdf';
 import { domToCanvas } from 'modern-screenshot';
 import { generateDiagnosis, BeliefDiagnosis } from './services/claudeService';
 import { saveToGoogleSheets } from './services/dataService';
+import { formatPhone, validatePhoneBR, getLocationFromPhone } from './utils/phoneBR';
 
 type Screen =
   | 'intro'
@@ -51,6 +52,25 @@ export default function App() {
   const [inputText, setInputText] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, '');
+    setWhatsapp(formatPhone(raw));
+    if (raw.length === 11) {
+      const { valid, error } = validatePhoneBR(raw);
+      setPhoneError(valid ? null : (error ?? null));
+    } else {
+      setPhoneError(null);
+    }
+  };
+
+  const handlePhoneBlur = () => {
+    const raw = whatsapp.replace(/\D/g, '');
+    if (raw.length === 0) return;
+    const { valid, error } = validatePhoneBR(raw);
+    setPhoneError(valid ? null : (error ?? null));
+  };
 
   const diagnosisRef = useRef<HTMLDivElement>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -64,10 +84,14 @@ export default function App() {
   useEffect(() => {
     if (diagnosis && currentScreen === 'result' && !hasSavedLead) {
       setHasSavedLead(true);
+      const phoneRaw = whatsapp.replace(/\D/g, '');
+      const location = getLocationFromPhone(phoneRaw);
       saveToGoogleSheets({
         timestamp: new Date().toLocaleString('pt-BR'),
         userName,
-        whatsapp,
+        whatsapp: phoneRaw,
+        city: location?.city ?? '',
+        state: location?.state ?? '',
         email,
         gender,
         maritalStatus,
@@ -251,16 +275,33 @@ export default function App() {
           <StepContainer
             title="Whatsapp com DDD"
             onBack={() => setCurrentScreen('name')}
-            onNext={() => whatsapp ? nextScreen('email') : setError('Por favor, insira seu Whatsapp.')}
+            onNext={() => {
+              const { valid, error } = validatePhoneBR(whatsapp);
+              if (!whatsapp) return setError('Por favor, insira seu Whatsapp.');
+              if (!valid) return setError(error ?? 'Número inválido.');
+              nextScreen('email');
+            }}
           >
-            <input
-              autoFocus
-              type="tel"
-              placeholder="(00) 9 0000 0000"
-              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white caret-[#c6a96b] focus:outline-none focus:border-[#c6a96b] focus:ring-2 focus:ring-[#c6a96b]/30 focus:shadow-[0_0_24px_rgba(198,169,107,0.10)] transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
-              value={whatsapp}
-              onChange={(e) => setWhatsapp(e.target.value)}
-            />
+            <div className="w-full max-w-sm mx-auto mb-8">
+              <input
+                autoFocus
+                type="tel"
+                inputMode="numeric"
+                placeholder="(11) 99999-9999"
+                maxLength={15}
+                className={`w-full block bg-[#111111] rounded-lg px-4 py-3 text-2xl text-white caret-[#c6a96b] focus:outline-none transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 border ${
+                  phoneError
+                    ? 'border-red-500/70 focus:border-red-500 focus:ring-2 focus:ring-red-500/30'
+                    : 'border-white/20 focus:border-[#c6a96b] focus:ring-2 focus:ring-[#c6a96b]/30 focus:shadow-[0_0_24px_rgba(198,169,107,0.10)]'
+                }`}
+                value={whatsapp}
+                onChange={handlePhoneChange}
+                onBlur={handlePhoneBlur}
+              />
+              {phoneError && (
+                <p className="mt-2 text-sm text-red-400 text-center">{phoneError}</p>
+              )}
+            </div>
           </StepContainer>
         );
 
