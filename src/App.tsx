@@ -400,10 +400,14 @@ export default function App() {
 
               <textarea
                 autoFocus
-                className="w-full min-h-[80px] bg-transparent border-none text-xl text-white leading-relaxed resize-none focus:outline-none placeholder:opacity-10"
+                className="w-full min-h-[80px] overflow-hidden bg-transparent border-none text-xl text-white leading-relaxed resize-none focus:outline-none placeholder:opacity-10"
                 placeholder="Sinta-se em um quadro em branco..."
                 value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  setInputText(e.target.value);
+  e.target.style.height = 'auto';
+  e.target.style.height = e.target.scrollHeight + 'px';
+}}
               />
             </div>
 
