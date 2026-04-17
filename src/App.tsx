@@ -693,9 +693,6 @@ function StepContainer({
   onNext, 
   hideNext = false 
 }: { 
-  title: string; 
-  children: React.ReactNode; 
-  onBack: () => void; 
   onNext?: () => void;
   hideNext?: boolean;
 }) {
