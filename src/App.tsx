@@ -240,7 +240,7 @@ export default function App() {
               autoFocus
               type="text"
               placeholder="Seu nome completo"
-              className="w-full bg-transparent border-b border-gold/30 py-4 text-2xl text-white focus:outline-none focus:border-gold transition-all text-center"
+              className="w-full max-w-sm mx-auto block bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-3 text-xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all text-center placeholder:text-white/30"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
             />
@@ -258,7 +258,7 @@ export default function App() {
               autoFocus
               type="tel"
               placeholder="(00) 9 0000 0000"
-              className="w-full bg-transparent border-b border-gold/30 py-4 text-2xl text-white focus:outline-none focus:border-gold transition-all text-center placeholder:opacity-20"
+              className="w-full max-w-sm mx-auto block bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-3 text-xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all text-center placeholder:text-white/30"
               value={whatsapp}
               onChange={(e) => setWhatsapp(e.target.value)}
             />
@@ -276,7 +276,7 @@ export default function App() {
               autoFocus
               type="email"
               placeholder="seu@email.com"
-              className="w-full bg-transparent border-b border-gold/30 py-4 text-2xl text-white focus:outline-none focus:border-gold transition-all text-center"
+              className="w-full max-w-sm mx-auto block bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-3 text-xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all text-center placeholder:text-white/30"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -336,7 +336,7 @@ export default function App() {
               autoFocus
               type="number"
               placeholder="Ex: 35"
-              className="w-full bg-transparent border-b border-gold/30 py-4 text-2xl text-white focus:outline-none focus:border-gold transition-all text-center placeholder:opacity-20"
+              className="w-full max-w-sm mx-auto block bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-3 text-xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all text-center placeholder:text-white/30"
               value={age}
               onChange={(e) => setAge(e.target.value)}
             />
@@ -387,8 +387,8 @@ export default function App() {
 
               <textarea
                 autoFocus
-                className="w-full min-h-[80px] overflow-hidden bg-transparent border-none text-xl text-white leading-relaxed resize-none focus:outline-none placeholder:opacity-10"
-                style={{ maxHeight: '300px', overflowY: 'auto' }}
+                className="w-full min-h-[160px] bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-4 text-xl text-white leading-relaxed resize-none focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all placeholder:text-white/30"
+                style={{ maxHeight: '400px', overflowY: 'auto' }}
                 placeholder="Sinta-se em um quadro em branco..."
                 value={inputText}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
