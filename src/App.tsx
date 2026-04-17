@@ -5,16 +5,16 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  MessageCircle, 
-  Loader2, 
-  ArrowRight, 
-  ArrowLeft, 
-  CheckCircle2, 
-  User, 
-  Phone, 
-  Mail, 
-  Calendar, 
+import {
+  MessageCircle,
+  Loader2,
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle2,
+  User,
+  Phone,
+  Mail,
+  Calendar,
   DollarSign,
   ChevronRight,
   Download
@@ -24,18 +24,20 @@ import { domToCanvas } from 'modern-screenshot';
 import { generateDiagnosis, BeliefDiagnosis } from './services/claudeService';
 import { saveToGoogleSheets } from './services/dataService';
 
-type Screen = 
-  | 'intro' 
-  | 'name' 
-  | 'whatsapp' 
-  | 'email' 
-  | 'gender' 
-  | 'maritalStatus' 
-  | 'age' 
-  | 'income' 
-  | 'description' 
-  | 'loading' 
+type Screen =
+  | 'intro'
+  | 'name'
+  | 'whatsapp'
+  | 'email'
+  | 'gender'
+  | 'maritalStatus'
+  | 'age'
+  | 'income'
+  | 'description'
+  | 'loading'
   | 'result';
+
+const STEP_SCREENS: Screen[] = ['name', 'whatsapp', 'email', 'gender', 'maritalStatus', 'age', 'income', 'description'];
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('intro');
@@ -49,14 +51,14 @@ export default function App() {
   const [inputText, setInputText] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
-  
+
   const diagnosisRef = useRef<HTMLDivElement>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [diagnosis, setDiagnosis] = useState<BeliefDiagnosis | null>(null);
   const [hasSavedLead, setHasSavedLead] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loadingPhrase, setLoadingPhrase] = useState('Analisando suas crenças...');
+  const [loadingPhrase, setLoadingPhrase] = useState('Analisando suas respostas...');
 
   // Save lead to Google Sheets once when result screen is reached
   useEffect(() => {
@@ -89,17 +91,17 @@ export default function App() {
   useEffect(() => {
     if (currentScreen === 'loading') {
       const phrases = [
-        "Analisando suas crenças.",
-        "Mapeando padrões de comportamentos ligados a esses resultados...",
-        "Identificando bloqueios subconscientes...",
-        "Conectando com o Método de Reprogramação de Crenças...",
-        "A IA está analisando a base de dados dos últimos 10 anos do Paulo Marinho..."
+        "Analisando suas respostas...",
+        "Identificando padrões emocionais...",
+        "Mapeando bloqueios subconscientes...",
+        "Conectando com o Método MRC...",
+        "Gerando seu diagnóstico...",
       ];
       let i = 0;
       const interval = setInterval(() => {
         i = (i + 1) % phrases.length;
         setLoadingPhrase(phrases[i]);
-      }, 3000);
+      }, 2500);
       return () => clearInterval(interval);
     }
   }, [currentScreen]);
@@ -111,13 +113,16 @@ export default function App() {
 
   const handleGenerateDiagnosis = async () => {
     if (!inputText.trim()) return;
-    
+
     setCurrentScreen('loading');
     setIsAnalyzing(true);
 
     try {
-      const result = await generateDiagnosis(inputText, userName);
-      setDiagnosis(result);
+      const [result] = await Promise.all([
+        generateDiagnosis(inputText, userName),
+        new Promise<void>(resolve => setTimeout(resolve, 1800)),
+      ]);
+      setDiagnosis(result as BeliefDiagnosis);
       setCurrentScreen('result');
     } catch (err) {
       setError("Ocorreu um erro ao processar seu diagnóstico. Tente novamente.");
@@ -139,43 +144,42 @@ export default function App() {
 
   const handleDownloadPDF = async () => {
     if (!diagnosisRef.current) return;
-    
+
     setIsGeneratingPDF(true);
     try {
       const element = diagnosisRef.current;
-      
+
       // Ensure layout is fully settled
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       const canvas = await domToCanvas(element, {
         scale: 1.8,
         backgroundColor: '#0a0a0a',
       });
-      
+
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'px',
         format: [canvas.width, canvas.height]
       });
-      
+
       pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-      
+
       // Dynamic link calculation
       const whatsappBtn = element.querySelector('[data-pdf-link="whatsapp"]');
       if (whatsappBtn) {
         const btnRect = whatsappBtn.getBoundingClientRect();
         const containerRect = element.getBoundingClientRect();
-        
-        // Calculate relative position
+
         const relX = btnRect.left - containerRect.left;
         const relY = btnRect.top - containerRect.top;
         const relW = btnRect.width;
         const relH = btnRect.height;
-        
+
         pdf.link(relX, relY, relW, relH, { url: getWhatsAppUrl() });
       }
-      
+
       pdf.save(`Diagnostico_MRC_${userName.replace(/\s+/g, '_')}.pdf`);
     } catch (err) {
       console.error("Error generating PDF:", err);
@@ -185,37 +189,32 @@ export default function App() {
     }
   };
 
-
   const renderScreen = () => {
     switch (currentScreen) {
       case 'intro':
         return (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center text-center space-y-12 max-w-2xl mx-auto px-6 py-20"
-          >
+          <div className="flex flex-col items-center text-center space-y-12 max-w-2xl mx-auto px-6 py-20">
             <h1 className="text-white text-4xl md:text-5xl font-serif leading-tight">
               Sua vida atual é o resultado de um <span className="text-gold">sistema invisível</span>. Vamos descobri-lo?
             </h1>
-            
+
             <div className="space-y-6 w-full">
               <div className="flex items-start gap-3 text-left max-w-md mx-auto bg-white/5 p-4 rounded-lg border border-white/10">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   id="lgpd-consent"
                   checked={acceptedTerms}
                   onChange={(e) => setAcceptedTerms(e.target.checked)}
                   className="mt-1 w-4 h-4 rounded border-gold/30 bg-transparent text-gold focus:ring-gold"
                 />
                 <label htmlFor="lgpd-consent" className="text-xs opacity-60 leading-relaxed cursor-pointer">
-                  Eu concordo com o processamento dos meus dados pessoais para fins de diagnóstico comportamental, conforme a <button onClick={() => setShowPrivacyModal(true)} className="text-gold underline hover:text-gold/80">Política de Privacidade</button> e os termos da LGPD.
+                  Eu concordo com o processamento dos meus dados pessoais para fins de diagnóstico comportamental, conforme a <button onClick={() => setShowPrivacyModal(true)} className="text-gold underline hover:text-gold/80 transition-colors duration-200">Política de Privacidade</button> e os termos da LGPD.
                 </label>
               </div>
 
-              <button 
+              <button
                 onClick={() => acceptedTerms ? nextScreen('name') : setError('Você precisa aceitar os termos para continuar.')}
-                className={`px-12 py-5 bg-gold text-black uppercase text-sm font-bold tracking-[3px] rounded-sm transition-all shadow-lg ${acceptedTerms ? 'hover:scale-105 shadow-gold/20' : 'opacity-50 cursor-not-allowed'}`}
+                className={`px-12 py-5 bg-gold text-black uppercase text-sm font-bold tracking-[3px] rounded-sm transition-all duration-200 shadow-lg active:scale-95 ${acceptedTerms ? 'hover:brightness-110 shadow-gold/20 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}
               >
                 Iniciar Diagnóstico
               </button>
@@ -226,12 +225,12 @@ export default function App() {
                 <PrivacyModal onClose={() => setShowPrivacyModal(false)} />
               )}
             </AnimatePresence>
-          </motion.div>
+          </div>
         );
 
       case 'name':
         return (
-          <StepContainer 
+          <StepContainer
             title="Qual o seu nome?"
             onBack={() => setCurrentScreen('intro')}
             onNext={() => userName ? nextScreen('whatsapp') : setError('Por favor, insira seu nome.')}
@@ -240,7 +239,7 @@ export default function App() {
               autoFocus
               type="text"
               placeholder="Seu nome completo"
-              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all text-center placeholder:text-white/30 mb-8"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
             />
@@ -249,7 +248,7 @@ export default function App() {
 
       case 'whatsapp':
         return (
-          <StepContainer 
+          <StepContainer
             title="Whatsapp com DDD"
             onBack={() => setCurrentScreen('name')}
             onNext={() => whatsapp ? nextScreen('email') : setError('Por favor, insira seu Whatsapp.')}
@@ -258,7 +257,7 @@ export default function App() {
               autoFocus
               type="tel"
               placeholder="(00) 9 0000 0000"
-              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all text-center placeholder:text-white/30 mb-8"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
               value={whatsapp}
               onChange={(e) => setWhatsapp(e.target.value)}
             />
@@ -267,7 +266,7 @@ export default function App() {
 
       case 'email':
         return (
-          <StepContainer 
+          <StepContainer
             title="E-mail"
             onBack={() => setCurrentScreen('whatsapp')}
             onNext={() => (email && email.includes('@')) ? nextScreen('gender') : setError('Por favor, insira um e-mail válido.')}
@@ -276,7 +275,7 @@ export default function App() {
               autoFocus
               type="email"
               placeholder="seu@email.com"
-              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all text-center placeholder:text-white/30 mb-8"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -285,7 +284,7 @@ export default function App() {
 
       case 'gender':
         return (
-          <StepContainer 
+          <StepContainer
             title="Qual o seu sexo?"
             onBack={() => setCurrentScreen('email')}
             hideNext
@@ -295,7 +294,7 @@ export default function App() {
                 <button
                   key={opt}
                   onClick={() => { setGender(opt); nextScreen('maritalStatus'); }}
-                  className={`py-4 border ${gender === opt ? 'border-gold bg-gold/10' : 'border-white/10'} rounded text-white hover:border-gold transition-all`}
+                  className={`py-4 border ${gender === opt ? 'border-gold bg-gold/10' : 'border-white/10'} rounded text-white hover:border-gold hover:bg-white/5 active:scale-95 transition-all duration-200`}
                 >
                   {opt}
                 </button>
@@ -306,7 +305,7 @@ export default function App() {
 
       case 'maritalStatus':
         return (
-          <StepContainer 
+          <StepContainer
             title="Estado civil"
             onBack={() => setCurrentScreen('gender')}
             hideNext
@@ -316,7 +315,7 @@ export default function App() {
                 <button
                   key={opt}
                   onClick={() => { setMaritalStatus(opt); nextScreen('age'); }}
-                  className={`py-3 border ${maritalStatus === opt ? 'border-gold bg-gold/10' : 'border-white/10'} rounded text-white hover:border-gold transition-all text-sm`}
+                  className={`py-3 border ${maritalStatus === opt ? 'border-gold bg-gold/10' : 'border-white/10'} rounded text-white hover:border-gold hover:bg-white/5 active:scale-95 transition-all duration-200 text-sm`}
                 >
                   {opt}
                 </button>
@@ -327,7 +326,7 @@ export default function App() {
 
       case 'age':
         return (
-          <StepContainer 
+          <StepContainer
             title="Sua idade"
             onBack={() => setCurrentScreen('maritalStatus')}
             onNext={() => age ? nextScreen('income') : setError('Por favor, insira sua idade.')}
@@ -336,7 +335,7 @@ export default function App() {
               autoFocus
               type="number"
               placeholder="Ex: 35"
-              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all text-center placeholder:text-white/30 mb-8"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
               value={age}
               onChange={(e) => setAge(e.target.value)}
             />
@@ -345,7 +344,7 @@ export default function App() {
 
       case 'income':
         return (
-          <StepContainer 
+          <StepContainer
             title="Renda Mensal"
             onBack={() => setCurrentScreen('age')}
             hideNext
@@ -361,7 +360,7 @@ export default function App() {
                 <button
                   key={opt}
                   onClick={() => { setIncome(opt); nextScreen('description'); }}
-                  className={`py-3 border ${income === opt ? 'border-gold bg-gold/10' : 'border-white/10'} rounded text-white hover:border-gold transition-all text-sm`}
+                  className={`py-3 border ${income === opt ? 'border-gold bg-gold/10' : 'border-white/10'} rounded text-white hover:border-gold hover:bg-white/5 active:scale-95 transition-all duration-200 text-sm`}
                 >
                   {opt}
                 </button>
@@ -372,11 +371,7 @@ export default function App() {
 
       case 'description':
         return (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col h-full max-w-4xl mx-auto"
-          >
+          <div className="flex flex-col flex-1 max-w-4xl mx-auto">
             <div className="flex-1 overflow-y-auto px-6 pt-10 pb-4 space-y-8">
               <div className="space-y-4 text-center md:text-left">
                 <h2 className="text-white text-3xl font-serif">O que está acontecendo hoje?</h2>
@@ -387,23 +382,22 @@ export default function App() {
 
               <textarea
                 autoFocus
-                className="w-full min-h-[160px] bg-[#111111] border border-white/20 rounded-lg px-4 py-4 text-2xl text-white leading-relaxed resize-none focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all placeholder:text-white/30 mb-10"
+                className="w-full min-h-[160px] bg-[#111111] border border-white/20 rounded-lg px-4 py-4 text-2xl text-white leading-relaxed resize-none focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all duration-200 placeholder:text-white/30 focus:placeholder:text-white/10 mb-10"
                 style={{ maxHeight: '400px', overflowY: 'auto' }}
                 placeholder="Sinta-se em um quadro em branco..."
                 value={inputText}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-  setInputText(e.target.value);
-  e.target.style.height = 'auto';
-  e.target.style.height = e.target.scrollHeight + 'px';
-}}
+                  setInputText(e.target.value);
+                  e.target.style.height = 'auto';
+                  e.target.style.height = e.target.scrollHeight + 'px';
+                }}
               />
-
             </div>
 
             <div className="flex-shrink-0 px-6 py-4 border-t border-white/5 bg-dark-bg/95 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between gap-4">
               <button
                 onClick={() => setCurrentScreen('income')}
-                className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-40 hover:opacity-100 transition-all"
+                className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-40 hover:opacity-100 active:scale-95 transition-all duration-200"
               >
                 <ArrowLeft className="w-4 h-4" /> Anterior
               </button>
@@ -411,19 +405,19 @@ export default function App() {
               <button
                 onClick={handleGenerateDiagnosis}
                 disabled={!inputText.trim() || isAnalyzing}
-                className={`px-12 py-5 bg-gold text-black uppercase text-sm font-bold tracking-[3px] rounded-sm transition-all flex items-center gap-3 ${inputText.length > 20 ? 'animate-pulse shadow-lg shadow-gold/40 scale-105' : 'opacity-50'}`}
+                className={`px-12 py-5 bg-gold text-black uppercase text-sm font-bold tracking-[3px] rounded-sm transition-all duration-200 flex items-center gap-3 active:scale-95 ${inputText.length > 20 ? 'hover:brightness-110 shadow-lg shadow-gold/40' : 'opacity-50 pointer-events-none'}`}
               >
                 Gerar Diagnóstico <ArrowRight className="w-4 h-4" />
               </button>
             </div>
-          </motion.div>
+          </div>
         );
 
       case 'loading':
         return (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-10 space-y-12">
             <div className="relative w-32 h-32">
-              <motion.div 
+              <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                 className="absolute inset-0 border-4 border-gold/10 border-t-gold rounded-full"
@@ -434,11 +428,12 @@ export default function App() {
             </div>
             <div className="space-y-4 max-w-sm">
               <AnimatePresence mode="wait">
-                <motion.p 
+                <motion.p
                   key={loadingPhrase}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="text-gold font-serif italic text-xl"
                 >
                   {loadingPhrase}
@@ -451,14 +446,10 @@ export default function App() {
       case 'result':
         if (!diagnosis) return null;
         return (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="w-full max-w-6xl mx-auto px-4 md:px-8 lg:px-12 py-8 space-y-12"
-          >
+          <div className="w-full max-w-6xl mx-auto px-4 md:px-8 lg:px-12 py-8 space-y-12">
             {/* Mobile-First Diagnosis Container */}
-            <div 
-              ref={diagnosisRef} 
+            <div
+              ref={diagnosisRef}
               className="bg-[#0a0a0a] text-white flex flex-col w-full max-w-[450px] md:max-w-2xl lg:max-w-4xl mx-auto shadow-2xl border border-white/5"
               style={{ height: 'auto' }}
             >
@@ -470,7 +461,7 @@ export default function App() {
                     {diagnosis.title}
                   </h2>
                 </div>
-                
+
                 <div className="flex flex-col items-center gap-2 pt-4">
                   <div className="h-px w-12 bg-gold/30" />
                   <p className="text-sm md:text-base lg:text-lg opacity-50 uppercase tracking-[3px]">
@@ -495,8 +486,8 @@ export default function App() {
                 {/* Root Beliefs */}
                 <div className="space-y-6">
                   <h3 className="text-gold text-[12px] uppercase tracking-[3px] font-bold flex items-center gap-3">
-                    <span className="h-px flex-1 bg-gold/20" /> 
-                    Crenças Raiz 
+                    <span className="h-px flex-1 bg-gold/20" />
+                    Crenças Raiz
                     <span className="h-px flex-1 bg-gold/20" />
                   </h3>
                   <div className="space-y-4">
@@ -512,8 +503,8 @@ export default function App() {
                 {/* Emotional Patterns */}
                 <div className="space-y-6">
                   <h3 className="text-gold text-[12px] uppercase tracking-[3px] font-bold flex items-center gap-3">
-                    <span className="h-px flex-1 bg-gold/20" /> 
-                    Mecanismos 
+                    <span className="h-px flex-1 bg-gold/20" />
+                    Mecanismos
                     <span className="h-px flex-1 bg-gold/20" />
                   </h3>
                   <div className="space-y-8">
@@ -529,8 +520,8 @@ export default function App() {
                 {/* Manifestations */}
                 <div className="space-y-6">
                   <h3 className="text-gold text-[12px] uppercase tracking-[3px] font-bold flex items-center gap-3">
-                    <span className="h-px flex-1 bg-gold/20" /> 
-                    Impactos Reais 
+                    <span className="h-px flex-1 bg-gold/20" />
+                    Impactos Reais
                     <span className="h-px flex-1 bg-gold/20" />
                   </h3>
                   <div className="grid grid-cols-1 gap-4">
@@ -567,11 +558,11 @@ export default function App() {
                     <p className="text-[11px] uppercase tracking-[2px] opacity-40">Próximo Passo Sugerido</p>
                     <p className="text-base italic opacity-60">Agende sua sessão estratégica individual com Paulo.</p>
                   </div>
-                  
-                  <button 
+
+                  <button
                     onClick={handleWhatsAppRedirect}
                     data-pdf-link="whatsapp"
-                    className="px-8 py-6 bg-whatsapp text-white uppercase text-sm font-bold tracking-[3px] rounded-full flex items-center justify-center gap-3 shadow-xl shadow-whatsapp/20 w-full"
+                    className="px-8 py-6 bg-whatsapp text-white uppercase text-sm font-bold tracking-[3px] rounded-full flex items-center justify-center gap-3 shadow-xl shadow-whatsapp/20 w-full hover:brightness-110 active:scale-95 transition-all duration-200"
                   >
                     <MessageCircle className="w-6 h-6" />
                     Falar com Paulo agora
@@ -590,7 +581,7 @@ export default function App() {
                 <button
                   onClick={handleDownloadPDF}
                   disabled={isGeneratingPDF}
-                  className="px-12 py-6 bg-white text-black uppercase text-sm font-bold tracking-[3px] rounded-full hover:bg-gold transition-all flex items-center justify-center gap-3 shadow-xl"
+                  className="px-12 py-6 bg-white text-black uppercase text-sm font-bold tracking-[3px] rounded-full hover:bg-gold hover:brightness-105 active:scale-95 transition-all duration-200 flex items-center justify-center gap-3 shadow-xl"
                 >
                   {isGeneratingPDF ? (
                     <Loader2 className="w-6 h-6 animate-spin" />
@@ -604,7 +595,7 @@ export default function App() {
                 O relatório foi otimizado para leitura em smartphones. O botão de WhatsApp dentro do PDF é clicável.
               </p>
             </div>
-          </motion.div>
+          </div>
         );
     }
   };
@@ -623,26 +614,34 @@ export default function App() {
         </header>
       )}
 
-      <main className="flex-1 flex flex-col">
-        <AnimatePresence mode="wait">
-          {renderScreen()}
-        </AnimatePresence>
-      </main>
-
-      {/* Progress Bar for multi-step */}
-      {['name', 'whatsapp', 'email', 'gender', 'maritalStatus', 'age', 'income', 'description'].includes(currentScreen) && (
-        <div className="fixed bottom-0 left-0 w-full h-1 bg-white/5">
-          <motion.div 
-            className="h-full bg-gold"
-            initial={{ width: 0 }}
-            animate={{ 
-              width: `${(
-                ['name', 'whatsapp', 'email', 'gender', 'maritalStatus', 'age', 'income', 'description'].indexOf(currentScreen) + 1
-              ) / 8 * 100}%` 
+      {/* Progress Bar — sits just below the header */}
+      {STEP_SCREENS.includes(currentScreen) && (
+        <div className="w-full h-0.5 bg-white/5 flex-shrink-0">
+          <motion.div
+            className="h-full bg-[#c6a96b]"
+            animate={{
+              width: `${(STEP_SCREENS.indexOf(currentScreen) + 1) / STEP_SCREENS.length * 100}%`
             }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
           />
         </div>
       )}
+
+      {/* Screen transitions — single motion.div keyed on currentScreen */}
+      <main className="flex-1 flex flex-col">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentScreen}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="flex-1 flex flex-col"
+          >
+            {renderScreen()}
+          </motion.div>
+        </AnimatePresence>
+      </main>
 
       {/* Error Toast */}
       <AnimatePresence>
@@ -651,6 +650,7 @@ export default function App() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.2 }}
             className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-red-900/90 text-white px-6 py-3 rounded-full text-sm border border-red-500/50 backdrop-blur-md z-[100]"
           >
             {error}
@@ -661,12 +661,12 @@ export default function App() {
   );
 }
 
-function StepContainer({ 
-  title, 
-  children, 
-  onBack, 
-  onNext, 
-  hideNext = false 
+function StepContainer({
+  title,
+  children,
+  onBack,
+  onNext,
+  hideNext = false
 }: {
   title: string;
   children: React.ReactNode;
@@ -675,38 +675,33 @@ function StepContainer({
   hideNext?: boolean;
 }) {
   return (
-    <motion.div 
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      className="flex-1 flex flex-col items-center justify-center p-6 space-y-12 max-w-xl mx-auto w-full"
-    >
+    <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-12 max-w-xl mx-auto w-full">
       <h2 className="text-white text-3xl md:text-4xl font-serif text-center leading-tight">
         {title}
       </h2>
-      
+
       <div className="w-full">
         {children}
       </div>
 
       <div className="flex items-center gap-8 pt-4">
-        <button 
+        <button
           onClick={onBack}
-          className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-40 hover:opacity-100 transition-all"
+          className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-40 hover:opacity-100 active:scale-95 transition-all duration-200"
         >
           <ArrowLeft className="w-4 h-4" /> Anterior
         </button>
-        
+
         {!hideNext && (
-          <button 
+          <button
             onClick={onNext}
-            className="flex items-center gap-2 text-xs uppercase tracking-widest text-gold font-bold hover:scale-110 transition-all"
+            className="flex items-center gap-2 text-xs uppercase tracking-widest text-gold font-bold hover:brightness-110 active:scale-95 transition-all duration-200"
           >
             Próximo <ArrowRight className="w-4 h-4" />
           </button>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -723,26 +718,29 @@ function RecommendationCard({ title, content }: { title: string, content: string
 
 function PrivacyModal({ onClose }: { onClose: () => void }) {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
       className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/90 backdrop-blur-sm"
     >
-      <motion.div 
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0, y: 10 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.95, opacity: 0, y: 10 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
         className="bg-dark-card border border-white/10 p-8 md:p-12 rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto space-y-8 relative"
       >
-        <button 
+        <button
           onClick={onClose}
-          className="absolute top-6 right-6 text-white/40 hover:text-white transition-all"
+          className="absolute top-6 right-6 text-white/40 hover:text-white active:scale-95 transition-all duration-200"
         >
           Fechar
         </button>
 
         <h2 className="text-gold text-2xl font-serif">Política de Privacidade e LGPD</h2>
-        
+
         <div className="space-y-6 text-sm opacity-70 leading-relaxed text-left">
           <section className="space-y-2">
             <h3 className="text-white font-bold">1. Coleta de Dados</h3>
@@ -770,9 +768,9 @@ function PrivacyModal({ onClose }: { onClose: () => void }) {
           </section>
         </div>
 
-        <button 
+        <button
           onClick={onClose}
-          className="w-full py-4 bg-gold text-black font-bold uppercase text-xs tracking-widest rounded-sm"
+          className="w-full py-4 bg-gold text-black font-bold uppercase text-xs tracking-widest rounded-sm hover:brightness-110 active:scale-95 transition-all duration-200"
         >
           Entendi e Aceito
         </button>
