@@ -53,11 +53,29 @@ export default function App() {
   const diagnosisRef = useRef<HTMLDivElement>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
-  const [hasSaved, setHasSaved] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   const [diagnosis, setDiagnosis] = useState<BeliefDiagnosis | null>(null);
+  const [hasSavedLead, setHasSavedLead] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingPhrase, setLoadingPhrase] = useState('Analisando suas crenças...');
+
+  // Save lead to Google Sheets once when result screen is reached
+  useEffect(() => {
+    if (diagnosis && currentScreen === 'result' && !hasSavedLead) {
+      setHasSavedLead(true);
+      saveToGoogleSheets({
+        timestamp: new Date().toLocaleString('pt-BR'),
+        userName,
+        whatsapp,
+        email,
+        gender,
+        maritalStatus,
+        age,
+        income,
+        inputText,
+        diagnosis,
+      }).catch(err => console.error('Lead save failed:', err));
+    }
+  }, [diagnosis, currentScreen]);
 
   // Auto-hide error toast
   useEffect(() => {
@@ -167,37 +185,6 @@ export default function App() {
     }
   };
 
-  // ✅ CORRIGIDO: removida dependência do diagnosisRef.current
-  // O ref pode ser null no primeiro render, bloqueando o save
-  useEffect(() => {
-    const autoSave = async () => {
-      if (diagnosis && currentScreen === 'result' && !hasSaved) {
-        setHasSaved(true);
-        setSaveStatus('saving');
-
-        saveToGoogleSheets({
-          timestamp: new Date().toLocaleString('pt-BR'),
-          userName,
-          whatsapp,
-          email,
-          gender,
-          maritalStatus,
-          age,
-          income,
-          inputText,
-          diagnosis,
-          pdfBase64: ''
-        }).then(() => {
-          setSaveStatus('success');
-        }).catch(err => {
-          console.error("Background save failed:", err);
-          setSaveStatus('error');
-        });
-      }
-    };
-
-    autoSave();
-  }, [diagnosis, currentScreen]);
 
   const renderScreen = () => {
     switch (currentScreen) {
@@ -469,20 +456,6 @@ export default function App() {
             animate={{ opacity: 1 }}
             className="max-w-4xl mx-auto px-4 py-8 space-y-12"
           >
-            {/* Save Status Indicator */}
-            <div className="flex justify-center -mb-4">
-              {saveStatus === 'saving' && (
-                <div className="flex items-center gap-2 text-[10px] text-gold/60 uppercase tracking-[2px] animate-pulse">
-                  <Loader2 className="w-3 h-3 animate-spin" /> Sincronizando relatório...
-                </div>
-              )}
-              {saveStatus === 'success' && (
-                <div className="flex items-center gap-2 text-[10px] text-green-500/60 uppercase tracking-[2px]">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500" /> Relatório arquivado com sucesso
-                </div>
-              )}
-            </div>
-
             {/* Mobile-First Diagnosis Container */}
             <div 
               ref={diagnosisRef} 
