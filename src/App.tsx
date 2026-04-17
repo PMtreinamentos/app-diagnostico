@@ -385,28 +385,30 @@ export default function App() {
 
       case 'description':
         return (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex flex-col h-full max-w-4xl mx-auto px-6 py-10 space-y-8"
+            className="flex flex-col h-full max-w-4xl mx-auto"
           >
-            <div className="space-y-4 text-center md:text-left">
-              <h2 className="text-white text-3xl font-serif">O que está acontecendo hoje?</h2>
-              <p className="text-sm opacity-60 leading-relaxed max-w-2xl">
-                Quanto mais você escrever, mais claro e profundo será o diagnóstico. Descreva em suas palavras como você se sente, o que te limita, o que você gostaria de mudar. Qual seu maior desafio? Sua maior dor? O que gerou isso?
-              </p>
+            <div className="flex-1 overflow-y-auto px-6 pt-10 pb-4 space-y-8">
+              <div className="space-y-4 text-center md:text-left">
+                <h2 className="text-white text-3xl font-serif">O que está acontecendo hoje?</h2>
+                <p className="text-sm opacity-60 leading-relaxed max-w-2xl">
+                  Quanto mais você escrever, mais claro e profundo será o diagnóstico. Descreva em suas palavras como você se sente, o que te limita, o que você gostaria de mudar. Qual seu maior desafio? Sua maior dor? O que gerou isso?
+                </p>
+              </div>
+
+              <textarea
+                autoFocus
+                className="w-full min-h-[200px] bg-transparent border-none text-xl text-white leading-relaxed resize-none focus:outline-none placeholder:opacity-10"
+                placeholder="Sinta-se em um quadro em branco..."
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+              />
             </div>
 
-            <textarea
-              autoFocus
-              className="flex-1 min-h-[300px] bg-transparent border-none text-xl text-white leading-relaxed resize-none focus:outline-none placeholder:opacity-10"
-              placeholder="Sinta-se em um quadro em branco..."
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-            />
-
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-6 border-t border-white/5">
-              <button 
+            <div className="flex-shrink-0 px-6 py-4 border-t border-white/5 bg-dark-bg/95 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between gap-4">
+              <button
                 onClick={() => setCurrentScreen('income')}
                 className="flex items-center gap-2 text-xs uppercase tracking-widest opacity-40 hover:opacity-100 transition-all"
               >
