@@ -681,8 +681,16 @@ function StepContainer({
   onNext?: () => void;
   hideNext?: boolean;
 }) {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (hideNext || !onNext) return;
+    if (e.key !== 'Enter') return;
+    if ((e.target as HTMLElement).tagName === 'TEXTAREA') return;
+    e.preventDefault();
+    onNext();
+  };
+
   return (
-    <div className="flex-1 flex flex-col items-center justify-center py-16 px-6 space-y-10 max-w-xl mx-auto w-full">
+    <div onKeyDown={handleKeyDown} className="flex-1 flex flex-col items-center justify-center py-16 px-6 space-y-10 max-w-xl mx-auto w-full">
       <h2 className="text-white text-4xl md:text-5xl font-serif text-center leading-tight tracking-tight">
         {title}
       </h2>
