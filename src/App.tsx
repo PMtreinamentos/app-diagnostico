@@ -240,7 +240,7 @@ export default function App() {
               autoFocus
               type="text"
               placeholder="Seu nome completo"
-              className="w-full max-w-sm mx-auto block bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-3 text-xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all text-center placeholder:text-white/30"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all text-center placeholder:text-white/30 mb-8"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
             />
@@ -258,7 +258,7 @@ export default function App() {
               autoFocus
               type="tel"
               placeholder="(00) 9 0000 0000"
-              className="w-full max-w-sm mx-auto block bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-3 text-xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all text-center placeholder:text-white/30"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all text-center placeholder:text-white/30 mb-8"
               value={whatsapp}
               onChange={(e) => setWhatsapp(e.target.value)}
             />
@@ -276,7 +276,7 @@ export default function App() {
               autoFocus
               type="email"
               placeholder="seu@email.com"
-              className="w-full max-w-sm mx-auto block bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-3 text-xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all text-center placeholder:text-white/30"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all text-center placeholder:text-white/30 mb-8"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -336,7 +336,7 @@ export default function App() {
               autoFocus
               type="number"
               placeholder="Ex: 35"
-              className="w-full max-w-sm mx-auto block bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-3 text-xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all text-center placeholder:text-white/30"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all text-center placeholder:text-white/30 mb-8"
               value={age}
               onChange={(e) => setAge(e.target.value)}
             />
@@ -387,7 +387,7 @@ export default function App() {
 
               <textarea
                 autoFocus
-                className="w-full min-h-[160px] bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-4 text-xl text-white leading-relaxed resize-none focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all placeholder:text-white/30"
+                className="w-full min-h-[160px] bg-[#111111] border border-white/20 rounded-lg px-4 py-4 text-2xl text-white leading-relaxed resize-none focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all placeholder:text-white/30 mb-10"
                 style={{ maxHeight: '400px', overflowY: 'auto' }}
                 placeholder="Sinta-se em um quadro em branco..."
                 value={inputText}
