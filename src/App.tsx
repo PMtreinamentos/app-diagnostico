@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
+import { g
   MessageCircle, 
   Loader2, 
   ArrowRight, 
@@ -401,6 +401,7 @@ export default function App() {
               <textarea
                 autoFocus
                 className="w-full min-h-[80px] overflow-hidden bg-transparent border-none text-xl text-white leading-relaxed resize-none focus:outline-none placeholder:opacity-10"
+                style={{ maxHeight: '300px', overflowY: 'auto' }}
                 placeholder="Sinta-se em um quadro em branco..."
                 value={inputText}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
