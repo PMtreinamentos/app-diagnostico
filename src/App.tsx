@@ -411,6 +411,8 @@ export default function App() {
 }}
               />
 
+            </div>
+
             <div className="flex-shrink-0 px-6 py-4 border-t border-white/5 bg-dark-bg/95 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between gap-4">
               <button
                 onClick={() => setCurrentScreen('income')}
@@ -692,7 +694,10 @@ function StepContainer({
   onBack, 
   onNext, 
   hideNext = false 
-}: { 
+}: {
+  title: string;
+  children: React.ReactNode;
+  onBack?: () => void;
   onNext?: () => void;
   hideNext?: boolean;
 }) {
