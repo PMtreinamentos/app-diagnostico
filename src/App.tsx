@@ -74,7 +74,7 @@ export default function App() {
         "Analisando suas crenças.",
         "Mapeando padrões de comportamentos ligados a esses resultados...",
         "Identificando bloqueios subconscientes...",
-        "Conectando com o Método de Reprogramação de Crenças..."
+        "Conectando com o Método de Reprogramação de Crenças...",
         "A IA está analisando a base de dados dos últimos 10 anos do Paulo Marinho..."
       ];
       let i = 0;
