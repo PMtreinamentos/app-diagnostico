@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { g
+import { 
   MessageCircle, 
   Loader2, 
   ArrowRight, 
