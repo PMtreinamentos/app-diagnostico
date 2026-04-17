@@ -194,7 +194,7 @@ export default function App() {
       case 'intro':
         return (
           <div className="flex flex-col items-center text-center space-y-12 max-w-2xl mx-auto px-6 py-20">
-            <h1 className="text-white text-4xl md:text-5xl font-serif leading-tight">
+            <h1 className="text-white text-4xl md:text-5xl font-serif leading-tight tracking-tight">
               Sua vida atual é o resultado de um <span className="text-gold">sistema invisível</span>. Vamos descobri-lo?
             </h1>
 
@@ -214,7 +214,7 @@ export default function App() {
 
               <button
                 onClick={() => acceptedTerms ? nextScreen('name') : setError('Você precisa aceitar os termos para continuar.')}
-                className={`px-12 py-5 bg-gold text-black uppercase text-sm font-bold tracking-[3px] rounded-sm transition-all duration-200 shadow-lg active:scale-95 ${acceptedTerms ? 'hover:brightness-110 shadow-gold/20 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}
+                className={`px-12 py-5 bg-gradient-to-r from-[#c6a96b] to-[#e6c98f] text-black uppercase text-sm font-bold tracking-[3px] rounded-md transition-all duration-200 shadow-lg shadow-[#c6a96b]/20 active:scale-95 ${acceptedTerms ? 'hover:brightness-110 cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}
               >
                 Iniciar Diagnóstico
               </button>
@@ -239,7 +239,7 @@ export default function App() {
               autoFocus
               type="text"
               placeholder="Seu nome completo"
-              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white caret-[#c6a96b] focus:outline-none focus:border-[#c6a96b] focus:ring-2 focus:ring-[#c6a96b]/30 focus:shadow-[0_0_24px_rgba(198,169,107,0.10)] transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
             />
@@ -257,7 +257,7 @@ export default function App() {
               autoFocus
               type="tel"
               placeholder="(00) 9 0000 0000"
-              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white caret-[#c6a96b] focus:outline-none focus:border-[#c6a96b] focus:ring-2 focus:ring-[#c6a96b]/30 focus:shadow-[0_0_24px_rgba(198,169,107,0.10)] transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
               value={whatsapp}
               onChange={(e) => setWhatsapp(e.target.value)}
             />
@@ -275,7 +275,7 @@ export default function App() {
               autoFocus
               type="email"
               placeholder="seu@email.com"
-              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white caret-[#c6a96b] focus:outline-none focus:border-[#c6a96b] focus:ring-2 focus:ring-[#c6a96b]/30 focus:shadow-[0_0_24px_rgba(198,169,107,0.10)] transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -294,7 +294,7 @@ export default function App() {
                 <button
                   key={opt}
                   onClick={() => { setGender(opt); nextScreen('maritalStatus'); }}
-                  className={`py-4 border ${gender === opt ? 'border-gold bg-gold/10' : 'border-white/10'} rounded text-white hover:border-gold hover:bg-white/5 active:scale-95 transition-all duration-200`}
+                  className={`py-4 border ${gender === opt ? 'border-[#c6a96b] bg-[#c6a96b]/10' : 'border-white/10'} rounded-md text-white hover:border-[#c6a96b] hover:bg-white/5 hover:scale-[1.02] active:scale-95 transition-all duration-200`}
                 >
                   {opt}
                 </button>
@@ -315,7 +315,7 @@ export default function App() {
                 <button
                   key={opt}
                   onClick={() => { setMaritalStatus(opt); nextScreen('age'); }}
-                  className={`py-3 border ${maritalStatus === opt ? 'border-gold bg-gold/10' : 'border-white/10'} rounded text-white hover:border-gold hover:bg-white/5 active:scale-95 transition-all duration-200 text-sm`}
+                  className={`py-3 border ${maritalStatus === opt ? 'border-[#c6a96b] bg-[#c6a96b]/10' : 'border-white/10'} rounded-md text-white hover:border-[#c6a96b] hover:bg-white/5 hover:scale-[1.02] active:scale-95 transition-all duration-200 text-sm`}
                 >
                   {opt}
                 </button>
@@ -335,7 +335,7 @@ export default function App() {
               autoFocus
               type="number"
               placeholder="Ex: 35"
-              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
+              className="w-full max-w-sm mx-auto block bg-[#111111] border border-white/20 rounded-lg px-4 py-3 text-2xl text-white caret-[#c6a96b] focus:outline-none focus:border-[#c6a96b] focus:ring-2 focus:ring-[#c6a96b]/30 focus:shadow-[0_0_24px_rgba(198,169,107,0.10)] transition-all duration-200 text-center placeholder:text-white/30 focus:placeholder:text-white/10 mb-8"
               value={age}
               onChange={(e) => setAge(e.target.value)}
             />
@@ -360,7 +360,7 @@ export default function App() {
                 <button
                   key={opt}
                   onClick={() => { setIncome(opt); nextScreen('description'); }}
-                  className={`py-3 border ${income === opt ? 'border-gold bg-gold/10' : 'border-white/10'} rounded text-white hover:border-gold hover:bg-white/5 active:scale-95 transition-all duration-200 text-sm`}
+                  className={`py-3 border ${income === opt ? 'border-[#c6a96b] bg-[#c6a96b]/10' : 'border-white/10'} rounded-md text-white hover:border-[#c6a96b] hover:bg-white/5 hover:scale-[1.02] active:scale-95 transition-all duration-200 text-sm`}
                 >
                   {opt}
                 </button>
@@ -374,7 +374,7 @@ export default function App() {
           <div className="flex flex-col flex-1 max-w-4xl mx-auto">
             <div className="flex-1 overflow-y-auto px-6 pt-10 pb-4 space-y-8">
               <div className="space-y-4 text-center md:text-left">
-                <h2 className="text-white text-3xl font-serif">O que está acontecendo hoje?</h2>
+                <h2 className="text-white text-4xl md:text-5xl font-serif tracking-tight leading-tight">O que está acontecendo hoje?</h2>
                 <p className="text-sm opacity-60 leading-relaxed max-w-2xl">
                   Quanto mais você escrever, mais claro e profundo será o diagnóstico. Descreva em suas palavras como você se sente, o que te limita, o que você gostaria de mudar. Qual seu maior desafio? Sua maior dor? O que gerou isso?
                 </p>
@@ -382,7 +382,7 @@ export default function App() {
 
               <textarea
                 autoFocus
-                className="w-full min-h-[160px] bg-[#111111] border border-white/20 rounded-lg px-4 py-4 text-2xl text-white leading-relaxed resize-none focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all duration-200 placeholder:text-white/30 focus:placeholder:text-white/10 mb-10"
+                className="w-full min-h-[160px] bg-[#111111] border border-white/20 rounded-lg px-4 py-4 text-2xl text-white caret-[#c6a96b] leading-relaxed resize-none focus:outline-none focus:border-[#c6a96b] focus:ring-2 focus:ring-[#c6a96b]/30 focus:shadow-[0_0_24px_rgba(198,169,107,0.10)] transition-all duration-200 placeholder:text-white/30 focus:placeholder:text-white/10 mb-10"
                 style={{ maxHeight: '400px', overflowY: 'auto' }}
                 placeholder="Sinta-se em um quadro em branco..."
                 value={inputText}
@@ -405,7 +405,7 @@ export default function App() {
               <button
                 onClick={handleGenerateDiagnosis}
                 disabled={!inputText.trim() || isAnalyzing}
-                className={`px-12 py-5 bg-gold text-black uppercase text-sm font-bold tracking-[3px] rounded-sm transition-all duration-200 flex items-center gap-3 active:scale-95 ${inputText.length > 20 ? 'hover:brightness-110 shadow-lg shadow-gold/40' : 'opacity-50 pointer-events-none'}`}
+                className={`px-12 py-5 bg-gradient-to-r from-[#c6a96b] to-[#e6c98f] text-black uppercase text-sm font-bold tracking-[3px] rounded-md transition-all duration-200 flex items-center gap-3 active:scale-95 shadow-lg shadow-[#c6a96b]/20 ${inputText.length > 20 ? 'hover:brightness-110' : 'opacity-50 pointer-events-none'}`}
               >
                 Gerar Diagnóstico <ArrowRight className="w-4 h-4" />
               </button>
@@ -415,30 +415,37 @@ export default function App() {
 
       case 'loading':
         return (
-          <div className="flex-1 flex flex-col items-center justify-center text-center p-10 space-y-12">
-            <div className="relative w-32 h-32">
+          <div className="flex-1 flex flex-col items-center justify-center text-center p-10 space-y-10">
+            <div className="relative w-28 h-28">
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 border-4 border-gold/10 border-t-gold rounded-full"
+                transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 border-2 border-[#c6a96b]/10 border-t-[#c6a96b] rounded-full"
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 text-gold animate-spin" />
+                <Loader2 className="w-7 h-7 text-[#c6a96b]/70 animate-spin" />
               </div>
             </div>
-            <div className="space-y-4 max-w-sm">
+            <div className="space-y-6 max-w-sm flex flex-col items-center">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={loadingPhrase}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="text-gold font-serif italic text-xl"
+                  initial={{ opacity: 0, y: 6, filter: 'blur(4px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -6, filter: 'blur(4px)' }}
+                  transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-[#c6a96b] font-serif italic text-xl"
                 >
                   {loadingPhrase}
                 </motion.p>
               </AnimatePresence>
+              <div className="w-48 h-px bg-white/5 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full w-16 bg-gradient-to-r from-transparent via-[#c6a96b] to-transparent"
+                  animate={{ x: ['-64px', '192px'] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </div>
             </div>
           </div>
         );
@@ -616,13 +623,13 @@ export default function App() {
 
       {/* Progress Bar — sits just below the header */}
       {STEP_SCREENS.includes(currentScreen) && (
-        <div className="w-full h-0.5 bg-white/5 flex-shrink-0">
+        <div className="w-full h-1 bg-white/5 flex-shrink-0 overflow-hidden">
           <motion.div
-            className="h-full bg-[#c6a96b]"
+            className="h-full bg-gradient-to-r from-[#c6a96b] to-[#e6c98f] rounded-full"
             animate={{
               width: `${(STEP_SCREENS.indexOf(currentScreen) + 1) / STEP_SCREENS.length * 100}%`
             }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           />
         </div>
       )}
@@ -632,10 +639,10 @@ export default function App() {
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScreen}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
+            initial={{ opacity: 0, y: 6, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -6, filter: 'blur(4px)' }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             className="flex-1 flex flex-col"
           >
             {renderScreen()}
@@ -675,8 +682,8 @@ function StepContainer({
   hideNext?: boolean;
 }) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-12 max-w-xl mx-auto w-full">
-      <h2 className="text-white text-3xl md:text-4xl font-serif text-center leading-tight">
+    <div className="flex-1 flex flex-col items-center justify-center py-16 px-6 space-y-10 max-w-xl mx-auto w-full">
+      <h2 className="text-white text-4xl md:text-5xl font-serif text-center leading-tight tracking-tight">
         {title}
       </h2>
 
@@ -770,7 +777,7 @@ function PrivacyModal({ onClose }: { onClose: () => void }) {
 
         <button
           onClick={onClose}
-          className="w-full py-4 bg-gold text-black font-bold uppercase text-xs tracking-widest rounded-sm hover:brightness-110 active:scale-95 transition-all duration-200"
+          className="w-full py-4 bg-gradient-to-r from-[#c6a96b] to-[#e6c98f] text-black font-bold uppercase text-xs tracking-widest rounded-md hover:brightness-110 active:scale-95 transition-all duration-200 shadow-lg shadow-[#c6a96b]/20"
         >
           Entendi e Aceito
         </button>
