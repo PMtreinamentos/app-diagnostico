@@ -410,7 +410,6 @@ export default function App() {
   e.target.style.height = e.target.scrollHeight + 'px';
 }}
               />
-            </div>
 
             <div className="flex-shrink-0 px-6 py-4 border-t border-white/5 bg-dark-bg/95 backdrop-blur-sm flex flex-col md:flex-row items-center justify-between gap-4">
               <button
