@@ -454,36 +454,36 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="max-w-4xl mx-auto px-4 py-8 space-y-12"
+            className="w-full max-w-6xl mx-auto px-4 md:px-8 lg:px-12 py-8 space-y-12"
           >
             {/* Mobile-First Diagnosis Container */}
             <div 
               ref={diagnosisRef} 
-              className="bg-[#0a0a0a] text-white flex flex-col max-w-[450px] mx-auto shadow-2xl border border-white/5"
+              className="bg-[#0a0a0a] text-white flex flex-col w-full max-w-[450px] md:max-w-2xl lg:max-w-4xl mx-auto shadow-2xl border border-white/5"
               style={{ height: 'auto' }}
             >
               {/* Editorial Header */}
-              <div className="p-8 pt-16 space-y-8 text-center border-b border-gold/10">
+              <div className="p-8 md:p-10 pt-16 space-y-8 text-center border-b border-gold/10">
                 <div className="space-y-2">
                   <p className="text-gold text-[10px] uppercase tracking-[5px] font-bold">Relatório Comportamental</p>
-                  <h2 className="text-white text-3xl md:text-4xl font-serif leading-tight px-4">
+                  <h2 className="text-white text-2xl md:text-4xl lg:text-5xl font-serif leading-tight px-4">
                     {diagnosis.title}
                   </h2>
                 </div>
                 
                 <div className="flex flex-col items-center gap-2 pt-4">
                   <div className="h-px w-12 bg-gold/30" />
-                  <p className="text-[11px] opacity-50 uppercase tracking-[3px]">
+                  <p className="text-sm md:text-base lg:text-lg opacity-50 uppercase tracking-[3px]">
                     Exclusivo para: {userName}
                   </p>
-                  <p className="text-[9px] opacity-30 uppercase tracking-[2px]">
+                  <p className="text-xs md:text-sm opacity-30 uppercase tracking-[2px]">
                     Emitido em {new Date().toLocaleDateString('pt-BR')}
                   </p>
                 </div>
               </div>
 
               {/* Content Sections */}
-              <div className="p-8 space-y-12">
+              <div className="p-8 md:p-10 space-y-6 md:space-y-10">
                 {/* Intro */}
                 <div className="relative">
                   <div className="absolute -left-4 top-0 text-6xl text-gold/10 font-serif">"</div>
@@ -554,8 +554,8 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Recommendations - Vertical for Mobile */}
-                <div className="space-y-6 pt-4">
+                {/* Recommendations */}
+                <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 lg:gap-10 pt-4">
                   <RecommendationCard title="Diagnóstico" content={diagnosis.recommendations.diagnosis} />
                   <RecommendationCard title="Reprogramação" content={diagnosis.recommendations.reprogramming} />
                   <RecommendationCard title="Consolidação" content={diagnosis.recommendations.consolidation} />

@@ -22,7 +22,8 @@
 }
 
 .report-preview-container {
-  @apply relative bg-dark-accent border border-white/5 p-8 rounded-lg;
+  @apply relative bg-dark-accent border border-white/5 rounded-lg
+         p-6 md:p-10 lg:p-16;
 }
 
 .report-preview-container::before {
