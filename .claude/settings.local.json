@@ -3,7 +3,15 @@
     "allow": [
       "Bash(npm run *)",
       "Bash(npx tsc *)",
-      "Bash(grep -E \"\\\\.\\(json|config|js|ts\\)$\")"
+      "Bash(grep -E \"\\\\.\\(json|config|js|ts\\)$\")",
+      "Bash(tasklist)",
+      "Read(//c/Users/paulo/AppData/Roaming/npm/node_modules/obsidian-mcp/**)",
+      "Bash(npm list *)",
+      "Bash(wmic process *)",
+      "Bash(grep -oE '[0-9]{4,6}')",
+      "Bash(powershell *)",
+      "Bash(timeout 15 \"C:/Users/paulo/AppData/Roaming/npm/obsidian-mcp.cmd\" \"C:/Users/paulo/segundo-cerebro\" \"C:/Users/paulo/vida-pessoal\")",
+      "Bash(grep -v \"^$\")"
     ]
   }
 }
